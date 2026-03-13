@@ -79,8 +79,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         addWindowActionMenuItems()
  
         updaterController = SPUStandardUpdaterController(updaterDelegate: nil, userDriverDelegate: self)
-        
+
         checkAutoCheckForUpdates()
+
+        if alreadyTrusted {
+            openPreferences(self)
+        }
         
         Notification.Name.configImported.onPost(using: { _ in
             self.checkAutoCheckForUpdates()
@@ -411,10 +415,6 @@ extension AppDelegate: NSMenuDelegate {
             for categoryMenu in categoryMenus {
                 categoryMenu.menu.delegate = self
                 let menuMenuItem = NSMenuItem(title: categoryMenu.category.displayName, action: nil, keyEquivalent: "")
-                if categoryMenu.category == .eighths {
-                    eighthsMenuItem = menuMenuItem
-                    eighthsMenuItem?.isHidden = !Defaults.showEighthsInMenu.userEnabled
-                }
                 mainStatusMenu.insertItem(menuMenuItem, at: menuIndex)
                 mainStatusMenu.setSubmenu(categoryMenu.menu, for: menuMenuItem)
                 menuIndex += 1
