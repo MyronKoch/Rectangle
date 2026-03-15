@@ -143,18 +143,6 @@ class PrefsViewController: NSViewController {
         rightColumn.addArrangedSubview(createShortcutRow(for: .topLeftTwelfth, label: "Twelfths"))
         rightColumn.addArrangedSubview(createShortcutRow(for: .topLeftSixteenth, label: "Sixteenths"))
 
-        // Move to Edge section
-        leftColumn.addArrangedSubview(createSectionSpacer())
-        rightColumn.addArrangedSubview(createSectionSpacer())
-        leftColumn.addArrangedSubview(createSectionHeader(title: "Move to Edge"))
-        rightColumn.addArrangedSubview(createSectionSeparator())
-        leftColumn.addArrangedSubview(createSectionSpacer())
-        rightColumn.addArrangedSubview(createSectionSpacer())
-
-        leftColumn.addArrangedSubview(createShortcutRow(for: .moveLeft))
-        leftColumn.addArrangedSubview(createShortcutRow(for: .moveUp))
-        rightColumn.addArrangedSubview(createShortcutRow(for: .moveRight))
-        rightColumn.addArrangedSubview(createShortcutRow(for: .moveDown))
     }
 
     private func createSectionSpacer() -> NSView {
