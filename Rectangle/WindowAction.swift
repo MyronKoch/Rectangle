@@ -189,7 +189,7 @@ enum WindowAction: Int, Codable {
     // Determines where separators should be used in the menu
     var firstInGroup: Bool {
         switch self {
-        case .leftHalf, .topLeft, .firstThird, .maximize, .almostMaximize, .nextDisplay, .moveLeft, .firstFourth, .topLeftSixth, .topLeftEighth, .topLeftTwelfth, .topLeftSixteenth:
+        case .leftHalf, .topLeft, .firstThird, .maximize, .almostMaximize, .nextDisplay, .moveLeft, .firstFourth, .topLeftSixth, .topLeftEighth, .topLeftNinth, .topLeftTwelfth, .topLeftSixteenth:
             return true
         default:
             return false
@@ -534,10 +534,10 @@ enum WindowAction: Int, Codable {
             value = "Upper Middle Left Sixteenth"
         case .upperMiddleCenterLeftSixteenth:
             key = "upperMiddleCenterLeftSixteenth.title"
-            value = "Upper Mid Center Left 16th"
+            value = "Upper Middle Center Left Sixteenth"
         case .upperMiddleCenterRightSixteenth:
             key = "upperMiddleCenterRightSixteenth.title"
-            value = "Upper Mid Center Right 16th"
+            value = "Upper Middle Center Right Sixteenth"
         case .upperMiddleRightSixteenth:
             key = "upperMiddleRightSixteenth.title"
             value = "Upper Middle Right Sixteenth"
@@ -546,10 +546,10 @@ enum WindowAction: Int, Codable {
             value = "Lower Middle Left Sixteenth"
         case .lowerMiddleCenterLeftSixteenth:
             key = "lowerMiddleCenterLeftSixteenth.title"
-            value = "Lower Mid Center Left 16th"
+            value = "Lower Middle Center Left Sixteenth"
         case .lowerMiddleCenterRightSixteenth:
             key = "lowerMiddleCenterRightSixteenth.title"
-            value = "Lower Mid Center Right 16th"
+            value = "Lower Middle Center Right Sixteenth"
         case .lowerMiddleRightSixteenth:
             key = "lowerMiddleRightSixteenth.title"
             value = "Lower Middle Right Sixteenth"
@@ -644,61 +644,18 @@ enum WindowAction: Int, Codable {
         case .smaller: return Shortcut( ctrl|alt, kVK_ANSI_Minus )
         case .center: return Shortcut( ctrl|alt, kVK_ANSI_C )
         case .restore: return Shortcut( ctrl|alt, kVK_Delete)
-        // Thirds: ctrl+alt+cmd + number row
-        case .firstThird: return Shortcut( ctrl|alt|cmd, kVK_ANSI_1 )
-        case .centerThird: return Shortcut( ctrl|alt|cmd, kVK_ANSI_2 )
-        case .lastThird: return Shortcut( ctrl|alt|cmd, kVK_ANSI_3 )
-        // Fourths: ctrl+alt + number row
-        case .firstFourth: return Shortcut( ctrl|alt, kVK_ANSI_1 )
-        case .secondFourth: return Shortcut( ctrl|alt, kVK_ANSI_2 )
-        case .thirdFourth: return Shortcut( ctrl|alt, kVK_ANSI_3 )
-        case .lastFourth: return Shortcut( ctrl|alt, kVK_ANSI_4 )
-        // Sixths: ctrl+alt+cmd + QWEASD
-        case .topLeftSixth: return Shortcut( ctrl|alt|cmd, kVK_ANSI_Q )
-        case .topCenterSixth: return Shortcut( ctrl|alt|cmd, kVK_ANSI_W )
-        case .topRightSixth: return Shortcut( ctrl|alt|cmd, kVK_ANSI_E )
-        case .bottomLeftSixth: return Shortcut( ctrl|alt|cmd, kVK_ANSI_A )
-        case .bottomCenterSixth: return Shortcut( ctrl|alt|cmd, kVK_ANSI_S )
-        case .bottomRightSixth: return Shortcut( ctrl|alt|cmd, kVK_ANSI_D )
-        // Eighths: ctrl+alt + QWER/ASDF
-        case .topLeftEighth: return Shortcut( ctrl|alt, kVK_ANSI_Q )
-        case .topCenterLeftEighth: return Shortcut( ctrl|alt, kVK_ANSI_W )
-        case .topCenterRightEighth: return Shortcut( ctrl|alt, kVK_ANSI_E )
-        case .topRightEighth: return Shortcut( ctrl|alt, kVK_ANSI_R )
-        case .bottomLeftEighth: return Shortcut( ctrl|alt, kVK_ANSI_A )
-        case .bottomCenterLeftEighth: return Shortcut( ctrl|alt, kVK_ANSI_S )
-        case .bottomCenterRightEighth: return Shortcut( ctrl|alt, kVK_ANSI_D )
-        case .bottomRightEighth: return Shortcut( ctrl|alt, kVK_ANSI_F )
-        // Twelfths: alt+cmd + 1-8/QWER
-        case .topLeftTwelfth: return Shortcut( alt|cmd, kVK_ANSI_1 )
-        case .topCenterLeftTwelfth: return Shortcut( alt|cmd, kVK_ANSI_2 )
-        case .topCenterRightTwelfth: return Shortcut( alt|cmd, kVK_ANSI_3 )
-        case .topRightTwelfth: return Shortcut( alt|cmd, kVK_ANSI_4 )
-        case .middleLeftTwelfth: return Shortcut( alt|cmd, kVK_ANSI_5 )
-        case .middleCenterLeftTwelfth: return Shortcut( alt|cmd, kVK_ANSI_6 )
-        case .middleCenterRightTwelfth: return Shortcut( alt|cmd, kVK_ANSI_7 )
-        case .middleRightTwelfth: return Shortcut( alt|cmd, kVK_ANSI_8 )
-        case .bottomLeftTwelfth: return Shortcut( alt|cmd, kVK_ANSI_Q )
-        case .bottomCenterLeftTwelfth: return Shortcut( alt|cmd, kVK_ANSI_W )
-        case .bottomCenterRightTwelfth: return Shortcut( alt|cmd, kVK_ANSI_E )
-        case .bottomRightTwelfth: return Shortcut( alt|cmd, kVK_ANSI_R )
-        // Sixteenths: ctrl+shift+cmd + QWER/ASDF/ZXCV/1234
-        case .topLeftSixteenth: return Shortcut( ctrl|shift|cmd, kVK_ANSI_Q )
-        case .topCenterLeftSixteenth: return Shortcut( ctrl|shift|cmd, kVK_ANSI_W )
-        case .topCenterRightSixteenth: return Shortcut( ctrl|shift|cmd, kVK_ANSI_E )
-        case .topRightSixteenth: return Shortcut( ctrl|shift|cmd, kVK_ANSI_R )
-        case .upperMiddleLeftSixteenth: return Shortcut( ctrl|shift|cmd, kVK_ANSI_A )
-        case .upperMiddleCenterLeftSixteenth: return Shortcut( ctrl|shift|cmd, kVK_ANSI_S )
-        case .upperMiddleCenterRightSixteenth: return Shortcut( ctrl|shift|cmd, kVK_ANSI_D )
-        case .upperMiddleRightSixteenth: return Shortcut( ctrl|shift|cmd, kVK_ANSI_F )
-        case .lowerMiddleLeftSixteenth: return Shortcut( ctrl|shift|cmd, kVK_ANSI_Z )
-        case .lowerMiddleCenterLeftSixteenth: return Shortcut( ctrl|shift|cmd, kVK_ANSI_X )
-        case .lowerMiddleCenterRightSixteenth: return Shortcut( ctrl|shift|cmd, kVK_ANSI_C )
-        case .lowerMiddleRightSixteenth: return Shortcut( ctrl|shift|cmd, kVK_ANSI_V )
-        case .bottomLeftSixteenth: return Shortcut( ctrl|shift|cmd, kVK_ANSI_1 )
-        case .bottomCenterLeftSixteenth: return Shortcut( ctrl|shift|cmd, kVK_ANSI_2 )
-        case .bottomCenterRightSixteenth: return Shortcut( ctrl|shift|cmd, kVK_ANSI_3 )
-        case .bottomRightSixteenth: return Shortcut( ctrl|shift|cmd, kVK_ANSI_4 )
+        case .firstThird: return Shortcut( ctrl|alt, kVK_ANSI_D )
+        case .firstTwoThirds: return Shortcut( ctrl|alt, kVK_ANSI_E )
+        case .centerThird: return Shortcut( ctrl|alt, kVK_ANSI_F )
+        case .lastTwoThirds: return Shortcut( ctrl|alt, kVK_ANSI_T )
+        case .lastThird: return Shortcut( ctrl|alt, kVK_ANSI_G )
+        case .centerTwoThirds:
+            if let installVersion = Defaults.installVersion.value,
+               let intInstallVersion = Int(installVersion),
+               intInstallVersion > 94 {
+                return Shortcut( ctrl|alt, kVK_ANSI_R )
+            }
+            return nil
         default: return nil
         }
     }
@@ -881,14 +838,15 @@ enum WindowAction: Int, Codable {
         case .firstFourth, .secondFourth, .thirdFourth, .lastFourth, .firstThreeFourths, .centerThreeFourths, .lastThreeFourths: return .fourths
         case .topLeftSixth, .topCenterSixth, .topRightSixth, .bottomLeftSixth, .bottomCenterSixth, .bottomRightSixth: return .sixths
         case .topLeftEighth, .topCenterLeftEighth, .topCenterRightEighth, .topRightEighth, .bottomLeftEighth, .bottomCenterLeftEighth, .bottomCenterRightEighth, .bottomRightEighth: return .eighths
+        case .topLeftNinth, .topCenterNinth, .topRightNinth, .middleLeftNinth, .middleCenterNinth, .middleRightNinth, .bottomLeftNinth, .bottomCenterNinth, .bottomRightNinth: return .ninths
         case .topLeftTwelfth, .topCenterLeftTwelfth, .topCenterRightTwelfth, .topRightTwelfth, .middleLeftTwelfth, .middleCenterLeftTwelfth, .middleCenterRightTwelfth, .middleRightTwelfth, .bottomLeftTwelfth, .bottomCenterLeftTwelfth, .bottomCenterRightTwelfth, .bottomRightTwelfth: return .twelfths
         case .topLeftSixteenth, .topCenterLeftSixteenth, .topCenterRightSixteenth, .topRightSixteenth, .upperMiddleLeftSixteenth, .upperMiddleCenterLeftSixteenth, .upperMiddleCenterRightSixteenth, .upperMiddleRightSixteenth, .lowerMiddleLeftSixteenth, .lowerMiddleCenterLeftSixteenth, .lowerMiddleCenterRightSixteenth, .lowerMiddleRightSixteenth, .bottomLeftSixteenth, .bottomCenterLeftSixteenth, .bottomCenterRightSixteenth, .bottomRightSixteenth: return .sixteenths
-        case .almostMaximize, .maximizeHeight, .larger, .smaller: return .size
         case .moveUp, .moveDown, .moveLeft, .moveRight: return .move
+        case .almostMaximize, .maximizeHeight, .larger, .smaller, .largerWidth, .smallerWidth, .largerHeight, .smallerHeight: return .size
         default: return nil
         }
     }
-    
+
     var classification: WindowActionCategory? {
         switch self {
         case .firstThird, .firstTwoThirds, .centerThird, .centerTwoThirds, .lastTwoThirds, .lastThird:
