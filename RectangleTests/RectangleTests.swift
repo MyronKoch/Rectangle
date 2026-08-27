@@ -594,13 +594,13 @@ class StackBadgeKeyHandlingTests: XCTestCase {
 /// Size plays no part in stack membership. A window pegged to the corner is in
 /// the stack whether it is maximized or a sixteenth - and a maximized window
 /// sitting on a smaller one is the case where the smaller window cannot be
-/// seen any other way, which is what the badge exists to reveal.
+/// seen any other way, which is what the list exists to reveal.
 ///
-/// The badge briefly excluded screen-covering windows, borrowed from the
+/// The list briefly excluded screen-covering windows, borrowed from the
 /// overlap offset where the exclusion is necessary (a maximized window shares
 /// its origin with every placement and would otherwise shift them all, #1766).
-/// The badge moves nothing, so it never needed it, and the exclusion made a
-/// maximized window over a half-screen window show no badge at all.
+/// The list moves nothing, so it never needed it, and the exclusion made a
+/// maximized window over a half-screen window show no list at all.
 class StackBadgeSizeAgnosticTests: XCTestCase {
 
     private let corner = CGPoint(x: 0, y: 0)

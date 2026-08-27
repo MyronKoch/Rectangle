@@ -95,7 +95,6 @@
 		983BBD6F253B609D000D223E /* FootprintWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983BBD6E253B609D000D223E /* FootprintWindow.swift */; };
 		F1AC0DE000000000000000A2 /* StackBadgeGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1AC0DE000000000000000A1 /* StackBadgeGeometry.swift */; };
 		F1AC0DE000000000000000A4 /* StackBadgeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1AC0DE000000000000000A3 /* StackBadgeManager.swift */; };
-		F1AC0DE000000000000000A6 /* StackBadgeWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1AC0DE000000000000000A7 /* StackBadgeWindow.swift */; };
 		F1AC0DE000000000000000A8 /* StackBadgeListPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1AC0DE000000000000000A9 /* StackBadgeListPanel.swift */; };
 		F1AC0DE000000000000000AA /* StackBadgeRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1AC0DE000000000000000AB /* StackBadgeRowView.swift */; };
 		983DD04028A844BE00BF1EEE /* SnapAreaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983DD03F28A844BE00BF1EEE /* SnapAreaViewController.swift */; };
@@ -326,7 +325,6 @@
 		983BBD6E253B609D000D223E /* FootprintWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FootprintWindow.swift; sourceTree = "<group>"; };
 		F1AC0DE000000000000000A1 /* StackBadgeGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackBadgeGeometry.swift; sourceTree = "<group>"; };
 		F1AC0DE000000000000000A3 /* StackBadgeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackBadgeManager.swift; sourceTree = "<group>"; };
-		F1AC0DE000000000000000A7 /* StackBadgeWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackBadgeWindow.swift; sourceTree = "<group>"; };
 		F1AC0DE000000000000000A9 /* StackBadgeListPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackBadgeListPanel.swift; sourceTree = "<group>"; };
 		F1AC0DE000000000000000AB /* StackBadgeRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackBadgeRowView.swift; sourceTree = "<group>"; };
 		983DD03F28A844BE00BF1EEE /* SnapAreaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapAreaViewController.swift; sourceTree = "<group>"; };
@@ -808,7 +806,6 @@
 			children = (
 				F1AC0DE000000000000000A1 /* StackBadgeGeometry.swift */,
 				F1AC0DE000000000000000A3 /* StackBadgeManager.swift */,
-				F1AC0DE000000000000000A7 /* StackBadgeWindow.swift */,
 				F1AC0DE000000000000000A9 /* StackBadgeListPanel.swift */,
 				F1AC0DE000000000000000AB /* StackBadgeRowView.swift */,
 			);
@@ -1113,7 +1110,6 @@
 				F1AC0DE000000000000000C2 /* OverlapOffsetGeometry.swift in Sources */,
 				F1AC0DE000000000000000A2 /* StackBadgeGeometry.swift in Sources */,
 				F1AC0DE000000000000000A4 /* StackBadgeManager.swift in Sources */,
-				F1AC0DE000000000000000A6 /* StackBadgeWindow.swift in Sources */,
 				F1AC0DE000000000000000A8 /* StackBadgeListPanel.swift in Sources */,
 				F1AC0DE000000000000000AA /* StackBadgeRowView.swift in Sources */,
 				988D067F22EB4EDE004EABD7 /* MoveLeftRightCalculation.swift in Sources */,

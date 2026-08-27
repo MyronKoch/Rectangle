@@ -80,8 +80,8 @@ struct StackBadgeStackedWindow {
     }
 }
 
-/// Clickable window-name list, opening downward from the peek into the window
-/// body. The panel owns its rows and shared mouse/keyboard selection state.
+/// Clickable window-name list, opening downward from the stack corner. The
+/// panel owns its rows and shared mouse/keyboard selection state.
 final class StackBadgeListPanel: NSPanel {
 
     private static let rowHeight: CGFloat = 22
@@ -89,6 +89,7 @@ final class StackBadgeListPanel: NSPanel {
     private let windows: [StackBadgeStackedWindow]
     private let onSelect: (StackBadgeStackedWindow) -> Void
     private let onDismiss: () -> Void
+    private let onLostKey: () -> Void
     private var rows: [StackBadgeRowView] = []
     private var selectedIndex = 0
 
@@ -108,10 +109,12 @@ final class StackBadgeListPanel: NSPanel {
          listTop: CGPoint,
          screenFrame: CGRect,
          onSelect: @escaping (StackBadgeStackedWindow) -> Void,
-         onDismiss: @escaping () -> Void) {
+         onDismiss: @escaping () -> Void,
+         onLostKey: @escaping () -> Void) {
         self.windows = windows
         self.onSelect = onSelect
         self.onDismiss = onDismiss
+        self.onLostKey = onLostKey
         let width: CGFloat = 260
         let padding = Self.listPadding
         let height = CGFloat(windows.count) * Self.rowHeight + padding * 2
@@ -169,6 +172,11 @@ final class StackBadgeListPanel: NSPanel {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func resignKey() {
+        super.resignKey()
+        onLostKey()
+    }
+
     override func keyDown(with event: NSEvent) {
         guard let key = StackBadgeManager.navigationKey(
             forKeyCode: event.keyCode,
@@ -204,20 +212,6 @@ final class StackBadgeListPanel: NSPanel {
                                                      count: rows.count)
         else { return }
         select(index: next)
-    }
-
-    /// `cursor` is where the pointer actually dwelled, which with a screen
-    /// gap can sit left of the gap-shifted badge - the corridor has to reach
-    /// it or the first move toward the badge counts as leaving.
-    func visibleUIFrames(with badge: StackBadgeWindow, triggerCorner: CGPoint, cursor: CGPoint) -> [CGRect] {
-        let uiMinX = min(badge.frame.minX, frame.minX, cursor.x)
-        let uiMaxX = max(badge.frame.maxX, frame.maxX, cursor.x)
-        let corridorBottom = frame.maxY
-        let corridorTop = max(triggerCorner.y, cursor.y)
-        let corridor = CGRect(x: uiMinX, y: corridorBottom,
-                              width: uiMaxX - uiMinX,
-                              height: max(0, corridorTop - corridorBottom))
-        return [badge.frame, frame, corridor]
     }
 
     private func applySelection() {

@@ -2,7 +2,7 @@ import Cocoa
 import Carbon.HIToolbox
 import MASShortcut
 
-/// Shows a badge and window-name list when the cursor dwells on a stack.
+/// Shows a window-name list when the cursor dwells on a stack.
 class StackBadgeManager {
 
     private static let tickInterval: TimeInterval = 0.1
@@ -20,16 +20,15 @@ class StackBadgeManager {
     private var dwellFired = false
     private var generation = 0
 
-    private var badgeWindow: StackBadgeWindow?
     private var listWindow: StackBadgeListPanel?
     private var visibleUIFrames = [CGRect]()
 
-    /// What the badge would open, kept from the dwell that showed it. The list
-    /// is not built until the cursor reaches the badge, so a stack passed over
-    /// on the way somewhere else costs a pill rather than a popup - and the
-    /// keyboard is only taken from the frontmost app once someone has aimed at
-    /// the badge on purpose.
-    private var pendingStack: (windows: [StackBadgeStackedWindow], corner: CGPoint, screenFrame: CGRect)?
+    /// Set while a window this list raised is being activated. Activation
+    /// makes the raised app key, which would leave the list on screen and
+    /// deaf, so the keyboard is taken back - but only for that. Any other app
+    /// becoming key is the user going somewhere else, and fighting them for
+    /// it would be a bug rather than a recovery.
+    private var awaitingKeyAfterRaise = false
 
     enum NavigationKey {
         case up, down, commit, escape
@@ -188,10 +187,12 @@ class StackBadgeManager {
             if !visibleUIFrames.isEmpty {
                 if !isInsideVisibleUI(location) {
                     dismiss()
-                } else if listWindow == nil, let badge = badgeWindow,
-                          badge.frame.insetBy(dx: -4, dy: -4).contains(location) {
-                    openList()
+                    return
                 }
+                // Only once the list is staying: a list on its way out must
+                // not take the keyboard on the way.
+                takeListKeyIfCursorIsOnIt(at: location)
+                reclaimListKeyIfNeeded()
             }
             return
         }
@@ -199,24 +200,12 @@ class StackBadgeManager {
         // The UI goes away if macOS hid it out from under us, which a Space
         // change can do without a notification the manager would otherwise
         // see.
-        if badgeWindow != nil {
-            let uiHidden = badgeWindow?.isVisible != true
-                || (listWindow != nil && listWindow?.isVisible != true)
-            if uiHidden {
-                dismiss()
-                return
-            }
+        if listWindow != nil, listWindow?.isVisible != true {
+            dismiss()
+            return
         }
-
-        // Raising a window activates its app, and activation is asynchronous -
-        // it completes after the call returns, so key status can be taken from
-        // the list a moment later. Rather than guess at that timing, take it
-        // back whenever the list is up and no longer holds it: an open list
-        // that cannot answer the arrow keys is the failure this exists to
-        // prevent.
-        if let list = listWindow, list.isVisible, !list.isKeyWindow {
-            list.makeKeyAndOrderFront(nil)
-        }
+        takeListKeyIfCursorIsOnIt(at: location)
+        reclaimListKeyIfNeeded()
 
         guard !dwellFired,
               ProcessInfo.processInfo.systemUptime - lastMoveTime >= Self.dwellInterval
@@ -293,61 +282,78 @@ class StackBadgeManager {
     private func show(windows: [StackBadgeStackedWindow], corner: CGPoint, screenFrame: CGRect) {
         dismiss()
 
-        let anchor = CGPoint(x: corner.x, y: corner.y - Self.titleBarClearance)
-
-        let badge = StackBadgeWindow(count: windows.count, corner: anchor)
-        badge.orderFrontRegardless()
-        badgeWindow = badge
-
-        pendingStack = (windows, corner, screenFrame)
-
-        // The badge alone still needs a way out, so the cursor's route from
-        // where it dwelled to the badge counts as staying inside the UI.
-        let corridor = CGRect(x: badge.frame.minX, y: badge.frame.maxY,
-                              width: badge.frame.width,
-                              height: max(0, corner.y - badge.frame.maxY))
-        visibleUIFrames = [badge.frame, corridor]
-    }
-
-    /// Opens the list under the badge. Called when the cursor reaches the
-    /// badge, not when the stack is first detected.
-    private func openList() {
-        guard listWindow == nil,
-              let badge = badgeWindow,
-              let (windows, corner, screenFrame) = pendingStack
-        else { return }
-
-        let listTop = CGPoint(x: badge.frame.minX + 12, y: badge.frame.minY - 6)
+        let listTop = CGPoint(x: corner.x + 12,
+                              y: corner.y - Self.titleBarClearance)
 
         // Only build the rows that fit above the screen bottom. Building them
         // all and letting the panel clip would leave the arrow keys able to
         // select - and Return able to raise - a window with no visible row.
-        // The badge still reports the true size of the stack.
         let listed = Array(windows.prefix(StackBadgeListPanel.rowsThatFit(below: listTop.y, above: screenFrame.minY)))
-        guard !listed.isEmpty else { return }
+        guard !listed.isEmpty else {
+            dismiss()
+            return
+        }
 
         let list = StackBadgeListPanel(
             windows: listed, listTop: listTop, screenFrame: screenFrame,
             onSelect: { [weak self] window in self?.focus(window) },
-            onDismiss: { [weak self] in self?.dismiss() })
+            onDismiss: { [weak self] in self?.dismiss() },
+            onLostKey: { [weak self] in
+                DispatchQueue.main.async { self?.reclaimListKeyIfNeeded() }
+            })
 
-        list.makeKeyAndOrderFront(nil)
+        list.orderFrontRegardless()
         listWindow = list
 
-        visibleUIFrames = list.visibleUIFrames(with: badge, triggerCorner: corner,
-                                               cursor: NSEvent.mouseLocation)
+        // The corridor has to reach where the pointer actually is, not just
+        // the geometric corner: a gap pushes the stack down and right of it,
+        // so the dwell point can sit below the list's top edge and outside
+        // its width. Without this the first move toward the list reads as
+        // leaving.
+        let cursor = NSEvent.mouseLocation
+        let corridorMinX = min(list.frame.minX, corner.x, cursor.x)
+        let corridorMaxX = max(list.frame.maxX, corner.x, cursor.x)
+        let corridorTop = max(corner.y, cursor.y)
+        let corridor = CGRect(x: corridorMinX, y: list.frame.maxY,
+                              width: corridorMaxX - corridorMinX,
+                              height: max(0, corridorTop - list.frame.maxY))
+        visibleUIFrames = [list.frame, corridor]
     }
 
     private func dismiss() {
         // Invalidate any in-flight title fetch so a stale result can't
         // resurrect the UI after a dismissal.
         generation += 1
-        badgeWindow?.orderOut(nil)
-        badgeWindow = nil
-        listWindow?.orderOut(nil)
+        let list = listWindow
         listWindow = nil
-        pendingStack = nil
+        awaitingKeyAfterRaise = false
+        list?.orderOut(nil)
         visibleUIFrames = []
+    }
+
+    /// A visible list only owns the keyboard while the pointer is over it.
+    /// This covers first entry and reclaim after another app becomes active.
+    /// Hands the list the keyboard once the cursor is actually on it, which
+    /// is what keeps a bare dwell from taking keys off whatever is being
+    /// typed into.
+    private func takeListKeyIfCursorIsOnIt(at location: CGPoint) {
+        guard let list = listWindow,
+              list.isVisible,
+              list.frame.contains(location),
+              !list.isKeyWindow
+        else { return }
+        list.makeKeyAndOrderFront(nil)
+    }
+
+    /// Takes the keyboard back after raising a window took it away. Does not
+    /// test the cursor, since walking a stack lets the pointer drift off the
+    /// rows between presses - but does test that we were the cause, so
+    /// switching to another app by any other means is left alone.
+    private func reclaimListKeyIfNeeded() {
+        guard awaitingKeyAfterRaise else { return }
+        guard let list = listWindow, list.isVisible, !list.isKeyWindow else { return }
+        awaitingKeyAfterRaise = false
+        list.makeKeyAndOrderFront(nil)
     }
 
     /// Resolves the window by pid directly (no shared window-list cache off
@@ -361,9 +367,9 @@ class StackBadgeManager {
     /// would still be on screen while the arrow keys drove the window that
     /// just came forward.
     private func focus(_ window: StackBadgeStackedWindow) {
+        awaitingKeyAfterRaise = true
         window.focus(axTimeout: Self.axTimeout) { [weak self] in
-            guard let self, let list = self.listWindow, list.isVisible else { return }
-            list.makeKeyAndOrderFront(nil)
+            DispatchQueue.main.async { self?.reclaimListKeyIfNeeded() }
         }
     }
 

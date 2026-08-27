@@ -911,13 +911,13 @@ class SettingsViewController: NSViewController {
             overlapOffsetCheckbox.translatesAutoresizingMaskIntoConstraints = false
             overlapOffsetCheckbox.alignment = .left
 
-            let stackBadgeCheckbox = NSButton(checkboxWithTitle: NSLocalizedString("Show stacked window badge on hover", tableName: "Main", value: "", comment: ""), target: self, action: #selector(toggleStackBadge(_:)))
+            let stackBadgeCheckbox = NSButton(checkboxWithTitle: NSLocalizedString("Show stacked window list on hover", tableName: "Main", value: "", comment: ""), target: self, action: #selector(toggleStackBadge(_:)))
             self.stackBadgeCheckbox = stackBadgeCheckbox
             stackBadgeCheckbox.state = Defaults.stackBadge.userEnabled ? .on : .off
             stackBadgeCheckbox.translatesAutoresizingMaskIntoConstraints = false
             stackBadgeCheckbox.alignment = .left
 
-            let stackBadgeToggleLabel = NSTextField(labelWithString: NSLocalizedString("Toggle stacked window badge", tableName: "Main", value: "", comment: ""))
+            let stackBadgeToggleLabel = NSTextField(labelWithString: NSLocalizedString("Toggle stacked window list", tableName: "Main", value: "", comment: ""))
             stackBadgeToggleLabel.alignment = .right
             stackBadgeToggleLabel.translatesAutoresizingMaskIntoConstraints = false
             // The label yields rather than pushing the recorder out of the
