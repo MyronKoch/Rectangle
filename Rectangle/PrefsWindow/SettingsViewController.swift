@@ -922,12 +922,9 @@ class SettingsViewController: NSViewController {
             stackBadgeCheckbox.translatesAutoresizingMaskIntoConstraints = false
             stackBadgeCheckbox.alignment = .left
 
-            let stackBadgeToggleLabel = NSTextField(labelWithString: NSLocalizedString("Toggle stacked window list", tableName: "Main", value: "", comment: ""))
+            let stackBadgeToggleLabel = NSTextField(labelWithString: NSLocalizedString("Toggle window list", tableName: "Main", value: "", comment: ""))
             stackBadgeToggleLabel.alignment = .right
             stackBadgeToggleLabel.translatesAutoresizingMaskIntoConstraints = false
-            // The label yields rather than pushing the recorder out of the
-            // column it shares with the rows above.
-            stackBadgeToggleLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
             let stackBadgeToggleShortcutView = MASShortcutView(frame: NSRect(x: 0, y: 0, width: 160, height: 19))
             stackBadgeToggleShortcutView.setAssociatedUserDefaultsKey(StackBadgeManager.toggleDefaultsKey, withTransformerName: MASDictionaryTransformerName)
             stackBadgeToggleShortcutView.translatesAutoresizingMaskIntoConstraints = false
@@ -1033,8 +1030,6 @@ class SettingsViewController: NSViewController {
                 showAdditionalSizesCheckbox.leadingAnchor.constraint(equalTo: largerWidthShortcutView.leadingAnchor),
                 overlapOffsetCheckbox.leadingAnchor.constraint(equalTo: largerWidthShortcutView.leadingAnchor),
                 stackBadgeCheckbox.leadingAnchor.constraint(equalTo: largerWidthShortcutView.leadingAnchor),
-                stackBadgeToggleRow.leadingAnchor.constraint(equalTo: largerWidthShortcutView.leadingAnchor),
-                stackBadgeToggleShortcutView.widthAnchor.constraint(equalToConstant: 160),
                 smallerWidthShortcutView.leadingAnchor.constraint(equalTo: largerWidthShortcutView.leadingAnchor),
                 topVerticalThirdShortcutView.leadingAnchor.constraint(equalTo: largerWidthShortcutView.leadingAnchor),
                 middleVerticalThirdShortcutView.leadingAnchor.constraint(equalTo: largerWidthShortcutView.leadingAnchor),
